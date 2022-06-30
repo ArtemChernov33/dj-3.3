@@ -18,9 +18,10 @@ class AdvertisementViewSet(viewsets.ModelViewSet):
 
     queryset = Advertisement.objects.all()
     serializer_class = AdvertisementSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
+     #permission_classes = [IsAuthenticated, IsOwner]
     filter_backends = [DjangoFilterBackend,]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwner]
     filterset_fields = ['status', 'created_at']
 
     def destroy(self, request, *args, **kwargs):
