@@ -12,6 +12,11 @@ from .models import Advertisement
 from .serializers import AdvertisementSerializer
 from .permissions import IsOwner
 
+class AdvertisementFilter(filters.FilterSet):
+    created_at = filters.DateFromToRangeFilter()
+    class Meta:
+        model = Advertisement
+        fields = ['status', 'created_at']
 
 class AdvertisementViewSet(viewsets.ModelViewSet):
     """ViewSet для объявлений."""
@@ -22,19 +27,15 @@ class AdvertisementViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend,]
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
     permission_classes = [IsAuthenticatedOrReadOnly, IsOwner]
-    filterset_fields = ['status', 'created_at']
+    filterset_class = AdvertisementFilter
 
     def destroy(self, request, *args, **kwargs):
         if request.user != self.get_object().creator:
             return Response('У вас нет прав')
         return super().destroy(request, **kwargs)
 
-class AdvertisementFilter(filters.FilterSet):
-    class Meta:
-        model = Advertisement
-        fields = ['status', 'created_at']
-        # status = filters.NumberFilter(field_name=)
-        # created_at = filters.NumberFilter()
+
+
 
 
 
